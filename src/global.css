@@ -1,10 +1,11 @@
-
+*{
+  background: linear-gradient(to bottom right, #1A1F21 30%, #6A7F87 100%);
+}
 .global-background {
     margin-top: -10px;
     margin-left: -10px;
     margin-bottom: -10px;
     box-sizing: border-box;
-    background: linear-gradient(to bottom right, #1A1F21 30%, #6A7F87 100%);
     width: 1230px;
     height: auto;
     display: flex;
@@ -16,7 +17,7 @@
 } 
 .logo{
     width: 50%;
-    height: 600px;
+    /* height: 600px; */
     margin-left: 250px;
 }
 
@@ -46,9 +47,11 @@
     width: 500px;
     border: 1px solid #F94D53;
     margin: 60px 30px;
+    background: transparent;
 }
 legend{
     color: white;
+    background: transparent;
 }
 sup{
     color: red;
@@ -59,13 +62,20 @@ input {
     height: 25px;
     box-shadow: 5px 5px black;
 }
+input::placeholder{
+  color: white;
+}
 .loginButton{
     height: 40px;
     width: 80px;
     /* margin-top: 15px; */
     box-shadow: 5px 5px  #1A1F21;
 }
+form,.login,li,aside,.navcontainer,ul,table,tr,td,tbody,sup,a,h1,.genre-filter,.subtitle,.pagination,.page{
+  background: transparent;
+}
 .asignup{
+  background: transparent;
     margin-top: 15px;
     color: white;
 }
@@ -81,18 +91,15 @@ table{
   cursor: pointer;
 }
 .genre-filter button{
-  margin: 10px;
+  margin: 5px;
   color: wheat;
-  background: linear-gradient(to bottom right, #1A1F21 30%, #6A7F87 100%);
+  border: 1px solid #F94D53;
 }
 section {
-
-    border: 1px solid red;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
   }
- 
   .card1 {
     height: 200px;
     width: 200px;
@@ -106,7 +113,7 @@ section {
   .images {
     width: 200px;
     height: 200px;
-    border-radius: 10px;
+    border-radius: inherit;
     transition: all 0.3s ease;
   }
   
@@ -125,14 +132,15 @@ section {
   }
   .details h4{
     width: 150px;
-    color: rgb(35, 66, 207);
+    background: transparent;
+    color: white;
      margin-top: -20px;
      font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   }
   .subtitle{
     height: 18px;
     width: 40px;
-    background-color: #000000;
+    /* background-color: #000000; */
     align-content: center;
     font-size: small;
     /* margin: 0px 170px; */
@@ -142,16 +150,17 @@ section {
     margin-left: -1px;
     margin-top: -20px;
     margin-bottom: 10px;
-    color: black;
+    color: wheat;
+    background: transparent;
     justify-content: flex-start;
     font-style: normal;
     font-size: 15px;
   }
   .readmore{
-    background-color: #1A1F21;
     color: white;
     box-shadow: 2px 2px #6A7F87;
     margin-left: 50px;
+    border: 1px solid red;
   }
 .navcontainer{
     width: 1240px;
@@ -189,10 +198,12 @@ nav img{
   display: flex;
   align-items: center;
   margin-bottom: 20px;
+  background: transparent;
 }
 .insta {
   display: flex;
   margin-bottom: 20px;
+  background: transparent;
 }
 
 .fb img {
@@ -208,10 +219,15 @@ nav img{
 }
 .fb p a {
   color: white;
+ 
 }
-.insta p  {
+.fb p{
+  background: transparent;
+}
+.insta p {
   margin-top: 300px;
   color: white;
+  background: transparent;
 }
 
 .fb a, .insta a {
@@ -225,7 +241,10 @@ nav img{
   .Aboutinfo{
     color: wheat;
     height: fit-content;
-    width: 1200px;
+    
+  }
+  .Aboutinfo h2, strong,h3,p{
+    background:transparent;
   }
   p{
     text-align: justify;
@@ -233,29 +252,31 @@ nav img{
     font-style: italic;
   }
   .details-card{
-    margin: 50px 10px;
+    margin: 20px;
     height: fit-content;
     font-size: x-large;
   }
   .details-image{
     height: 400px;
     width: 400px;
-    padding: 20px;
+    background:transparent;
   }
   .detailsTitle{
     font-size: 50px;
     margin: -400px 0px 0px 440px;
     color:#F94D53;
+    background:transparent;
   }
   .trailer  button{
-    border: 1px solid ;
-    background: linear-gradient(to bottom right, #1A1F21 30%, #6A7F87 100%);
+    border: 1px solid #F94D53;
+    /* background: linear-gradient(to bottom right, #1A1F21 30%, #6A7F87 100%); */
     color: white;
   }
   .detailssubtitle{
     margin-left: 900px;
     margin-top: -80px;
     color: #F94D53;
+    background:transparent;
   }
   .detailsoverview{
     margin: 70px 0px 0px 450px;
@@ -265,21 +286,25 @@ nav img{
     height: 150px;
     font-size: large;
   }
-  .detailsoverview h2{
-    color: #F94D53;
-    text-decoration: underline;
-  }
-
   .date,.language,.trailer,.director{
     margin: 0px 440px;
     color: wheat;
+    background:transparent;
+  }
+  .list-group-flush{
+    margin-top: 20px;
+    background:transparent;
+  }
+  .list-group{
+    background:transparent
   }
   .castlist {
-    margin-top: 45px;
+    margin-top: 75px;
     margin-left: 20px;
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
+    background:transparent;
   }
   .cast-card {
     width: 130px;
@@ -308,23 +333,24 @@ nav img{
   
   .reviews-section{
     margin-left: 100px;
-    width: 1000px;
+    /* width: 1000px; */
     font-size: medium;
     color: wheat;
+    background:transparent;
   }
   .addingReview{
     width: 400px;
     height: 40px;
+    border: 1px solid #F94D53;
   }
-  .reviewContent{
-    display: flex;
-    flex-direction: row;
+  .reviews{
+    background: transparent;
   }
   .reviews button{
     margin-left: 300px;
     color: wheat;
-    border: 1px solid silver;
-    background:linear-gradient(to bottom right, #1A1F21 30%, #6A7F87 100%) ;
+    border: 1px solid #F94D53;
+    /* background:linear-gradient(to bottom right, #1A1F21 30%, #6A7F87 100%) ; */
   }
   .searchbox{
     border-radius: 30px;

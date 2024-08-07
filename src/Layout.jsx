@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import Navbar from './Navbar';
 import { AuthContext } from './AuthContext';
+import Navbars from './Navbars';
 
 const Layout = ({ onSearchChange }) => {
   const { logout } = useContext(AuthContext);
@@ -21,7 +21,7 @@ const Layout = ({ onSearchChange }) => {
   return (
     <>
       {!hideNavbarPaths.includes(location.pathname) && (
-        <Navbar onSearchChange={handleSearchChange} onLogout={logout} />
+        <Navbars onSearchChange={handleSearchChange} onLogout={logout} />
       )}
       <Outlet context={{ searchQuery }} />
     </>

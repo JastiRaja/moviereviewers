@@ -2,7 +2,7 @@ import React from 'react'
 
 const About = () => {
   return (
-    <div className='global-background'>
+    <div>
       <div className='Aboutinfo'>
         
         <p>

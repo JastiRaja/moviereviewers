@@ -82,7 +82,7 @@ const Login = () => {
               <tr>
                 <td></td>
                 <td></td>
-                <td style={{ fontSize: 'small', textDecoration: 'underline', color: 'red' }}>
+                <td style={{ fontSize: 'small', textDecoration: 'underline', color: 'red', background: 'transparent'}}>
                   <NavLink to="/reset-password">Forgotten password</NavLink>
                 </td>
               </tr>

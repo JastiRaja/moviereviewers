@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import banner from './Banner.jpg';
 import { AuthContext } from './AuthContext';
+import { Container } from 'react-bootstrap';
 
 const Navbar = ({ onSearchChange, onLogout }) => {
   const { user } = useContext(AuthContext);
@@ -17,7 +18,9 @@ const Navbar = ({ onSearchChange, onLogout }) => {
   };
 
   return (
-    <nav className='navcontainer global-background'>
+    
+    <Container>
+    <nav className='navcontainer'>
       <aside className='bannerblock'>
         <img src={banner} alt="" />
       </aside>
@@ -56,6 +59,7 @@ const Navbar = ({ onSearchChange, onLogout }) => {
         </ul>
       </aside>
     </nav>
+    </Container>
   );
 };
 

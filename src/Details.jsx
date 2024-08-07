@@ -89,7 +89,7 @@ const Details = () => {
   };
 
   return (
-    <div className='global-background'>
+    <div>
       {movie ? (
         <Card className="details-card">
           <Card.Img
@@ -98,7 +98,7 @@ const Details = () => {
             alt="img"
           />
           <Card.Body>
-            <Card.Title>
+            <Card.Title style={{background:'transparent'}}>
               <h5 className='detailsTitle'>{movie.original_title} ({movie.release_date.slice(0, 4)})</h5>
               <ListGroupItem className='date'>({movie.release_date})</ListGroupItem>
               <ListGroupItem className='language'>Language: {movie.original_language}</ListGroupItem>
@@ -109,13 +109,13 @@ const Details = () => {
                     variant="primary" 
                     onClick={() => window.open(trailer, '_blank')}
                   >
-                    <FaRegPlayCircle style={{ marginRight: '5px' }} />Play Trailer
+                    <FaRegPlayCircle style={{ marginRight: '5px',background:'transparent', margin:'2px'}} />Play Trailer
                   </Button>
                 </div>
               )}
               <Card.Subtitle className="detailssubtitle">    
                 {movie.vote_average?.toFixed(1)}
-                <MdOutlineStarOutline />
+                <MdOutlineStarOutline style={{background:'transparent'}}/>
               </Card.Subtitle>
             </Card.Title>
             <Card.Text className="detailsoverview">
@@ -141,9 +141,9 @@ const Details = () => {
             <div className='reviews-section'>
               <h1>Reviews:</h1>
               {apiReviews.length > 0 && (
-                <ListGroup>
+                <ListGroup >
                   {apiReviews.map(review => (
-                    <ListGroupItem key={review.id}>
+                    <ListGroupItem key={review.id} style={{background:'transparent'}}>
                       <strong>{review.author}</strong>
                       <p>{review.content}</p>
                       <hr />

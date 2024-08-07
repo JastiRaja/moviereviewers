@@ -30,14 +30,15 @@ const AddReview = ({ movieId, fetchReviews }) => {
 
   return (
     <Form onSubmit={handleSubmit} className='reviews'>
-      <Form.Group controlId="reviewContent">
-        <Form.Label className='adding'>Add your Review:</Form.Label>
+      <Form.Group controlId="reviewContent" style={{background:'transparent'}}>
+        <Form.Label className='adding' style={{background:'transparent'}}>Add your Review:</Form.Label>
         <Form.Control
         className='addingReview'
           as="textarea"
           rows={3}
           value={content}
           onChange={(e) => setContent(e.target.value)}
+          style={{background:'white',marginLeft:'10px'}}
         />
       </Form.Group>
       <Button  type="submit" >

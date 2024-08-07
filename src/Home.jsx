@@ -145,7 +145,8 @@ const Home = () => {
   };
 
   return (
-    <section className='global-background'>
+    <section>
+      
       <GenreFilter
         genres={genres}
         selectedGenres={selectedGenres}
@@ -166,9 +167,9 @@ const Home = () => {
             />
             {hoveredMovieIndex === index && (
               <Card.Body className='details'>
-                <Card.Title>
+                <Card.Title style={{background:'transparent'}}>
                   <Card.Subtitle className='subtitle'>
-                    <Badge style={{ color: 'blue', margin: "5px" }}>{movie.vote_average.toFixed(1)}<MdOutlineStarOutline /></Badge>
+                    <Badge style={{ color: 'blue', margin: "5px",background:'transparent'}}>{movie.vote_average.toFixed(1)}<MdOutlineStarOutline style={{background:'transparent'}} /></Badge>
                   </Card.Subtitle>
                   <h4>{movie.original_title.slice(0, 17)}</h4>
                 </Card.Title>

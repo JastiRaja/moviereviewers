@@ -3,8 +3,10 @@ import { Button, ButtonGroup } from 'react-bootstrap';
 
 const GenreFilter = ({ genres, selectedGenres, onGenreChange }) => {
   return (
+    
     <div className='genre-filter'>
-      <ButtonGroup>
+      <hr />
+      <ButtonGroup style={{background:'transparent'}}>
         {genres.map(genre => (
           <Button
             key={genre.id}
@@ -15,6 +17,7 @@ const GenreFilter = ({ genres, selectedGenres, onGenreChange }) => {
           </Button>
         ))}
       </ButtonGroup>
+      <hr />
     </div>
   );
 };

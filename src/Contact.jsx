@@ -4,7 +4,7 @@ import instagram from './insta.jpeg'
 
 const Contact = () => {
   return (
-    <div className='global-background'>
+    <div>
       <div className='logos'>
         <div className="fb">
           <img src={facebook} alt="" />
