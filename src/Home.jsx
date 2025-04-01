@@ -161,7 +161,8 @@ const Home = () => {
         >
           <div>
             <Card.Img
-              className={`images ${hoveredMovieIndex === index ? 'hovered' : ''}`}
+            id='homeimage'
+              className={`images ${hoveredMovieIndex === index ? 'hovered' : ''}` }
               src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
               alt="img"
             />
@@ -169,9 +170,9 @@ const Home = () => {
               <Card.Body className='details'>
                 <Card.Title style={{background:'transparent'}}>
                   <Card.Subtitle className='subtitle'>
-                    <Badge style={{ color: 'blue', margin: "5px",background:'transparent'}}>{movie.vote_average.toFixed(1)}<MdOutlineStarOutline style={{background:'transparent'}} /></Badge>
+                    <Badge >{movie.vote_average.toFixed(1)}<MdOutlineStarOutline style={{background:'transparent'}} /></Badge>
                   </Card.Subtitle>
-                  <h4>{movie.original_title.slice(0, 17)}</h4>
+                  <h4>{movie.original_title.slice(0, 12)}</h4>
                 </Card.Title>
                 <Card.Text className='overview'>
                   {movie.overview.slice(0, 50)}...
@@ -179,7 +180,7 @@ const Home = () => {
                 <Link state={{ apiKey, movieId: movie.id }} to={{
                   pathname: '/Details',
                 }}>
-                  <Button className='readmore'>View Reviews...</Button>
+                  <Button className='readmore'>Read More</Button>
                 </Link>
               </Card.Body>
             )}
