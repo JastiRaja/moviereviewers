@@ -19,13 +19,13 @@ const Navbar = ({ onSearchChange, onLogout }) => {
 
   return (
     
-    <Container>
     <nav className='navcontainer'>
+     
+      <div style={{display:"flex",width:'100vw',color:"white"}} className='navblock'> 
       <aside className='bannerblock'>
         <img src={banner} alt="" />
       </aside>
-      <aside className='listitems'>
-        <ul>
+      <ul >
           <NavLink to='/Home'>
             <li>Home</li>
           </NavLink>
@@ -57,9 +57,8 @@ const Navbar = ({ onSearchChange, onLogout }) => {
         <ul>
           <li onClick={handleSignout} className='signout'>Signout</li>
         </ul>
-      </aside>
+      </div>
     </nav>
-    </Container>
   );
 };
 

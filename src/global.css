@@ -47,7 +47,7 @@
     width: 500px;
     border: 1px solid #F94D53;
     margin: 60px 30px;
-    background: transparent;
+    /* background: transparent; */
 }
 legend{
     color: white;
@@ -163,24 +163,35 @@ section {
     border: 1px solid red;
   }
 .navcontainer{
-    width: 1240px;
+    width: 98vw;
     height: 50px;
     display: flex;
     flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.navblock ul li{
+    list-style-type: none;
+    list-style: none;
+   
 }
 nav img{
     height: 40px;
     margin: 0px 40px;
 }
+
+
 .listitems {
     display: flex;
     flex-wrap: wrap;
-    gap: 70px;
+    gap: 7px;
 }
 .listitems ul{
-    list-style: none;
+    /* list-style: none; */
+    list-style-type: none;
     display: flex;
     flex-wrap: wrap;
+    width: 15.2%;
     gap: 0px;
     color: #F94D53;
 }
@@ -380,4 +391,9 @@ nav img{
     border-radius: 50px;
     border:2px solid #F94D53;
     font-size: medium;
+  }
+  @media screen and (max-width: 352px){
+    .navcontainer {
+      display:none;
+    }
   }
