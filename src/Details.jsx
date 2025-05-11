@@ -1,21 +1,17 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { Card, ListGroup, ListGroupItem, Button } from 'react-bootstrap';
+import { Card, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { MdOutlineStarOutline } from "react-icons/md";
 import { FaRegPlayCircle } from "react-icons/fa";
-import { AuthContext } from './AuthContext';
-import AddReview from './AddReview';
 
 const Details = () => {
   const location = useLocation();
   const { apiKey, movieId } = location.state || {};
   const [movie, setMovie] = useState(null);
   const [apiReviews, setApiReviews] = useState([]);
-  const [userReviews, setUserReviews] = useState([]);
   const [credits, setCredits] = useState(null);
   const [trailer, setTrailer] = useState(null);
-  const { user } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchMovie = async () => {
@@ -33,9 +29,6 @@ const Details = () => {
             `https://api.themoviedb.org/3/movie/${movieData.id}/reviews?api_key=${apiKey}`
           );
           setApiReviews(reviewsResponse.data.results);
-
-          // Fetch user reviews for the movie from JSON Server
-          fetchUserReviews();
 
           // Fetch credits for the movie
           const creditsResponse = await axios.get(
@@ -60,69 +53,33 @@ const Details = () => {
     fetchMovie();
   }, [apiKey, movieId]);
 
-  const fetchUserReviews = async () => {
-    try {
-      const userReviewsResponse = await axios.get(
-        `http://localhost:5000/reviews?movieId=${movieId}`
-      );
-      setUserReviews(userReviewsResponse.data);
-    } catch (error) {
-      console.error('Error fetching user reviews', error);
-    }
-  };
-
-  const handleDelete = async (reviewId) => {
-    try {
-      await axios.delete(`http://localhost:5000/reviews/${reviewId}`);
-      fetchUserReviews();
-    } catch (error) {
-      console.error('Error deleting review', error);
-    }
-  };
-
-  const getDirector = () => {
-    if (credits) {
-      const director = credits.crew.find(member => member.job === 'Director');
-      return director ? director.name : 'N/A';
-    }
-    return 'N/A';
-  };
-
   return (
-    <div>
+    <div className='details-container'>
       {movie ? (
-        <Card className="details-card">
-          <Card.Img
-            className="details-image"
-            src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-            alt="img"
-          />
+        <Card className='movie-details'>
           <Card.Body>
-            <Card.Title style={{background:'transparent'}}>
-              <h5 className='detailsTitle'>{movie.original_title} ({movie.release_date.slice(0, 4)})</h5>
-              <ListGroupItem className='date'>({movie.release_date})</ListGroupItem>
-              <ListGroupItem className='language'>Language: {movie.original_language}</ListGroupItem>
-              <ListGroupItem className='director'>Director: {getDirector()}</ListGroupItem>
-              {trailer && (
-                <div className='trailer'>
-                  <Button 
-                    variant="primary" 
-                    onClick={() => window.open(trailer, '_blank')}
-                  >
-                    <FaRegPlayCircle style={{ marginRight: '5px',background:'transparent', margin:'2px'}} />Play Trailer
-                  </Button>
+            <div className='movie-header'>
+              <img
+                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                alt={movie.title}
+                className='movie-poster'
+              />
+              <div className='movie-info'>
+                <h1>{movie.title}</h1>
+                <p className='movie-overview'>{movie.overview}</p>
+                <div className='movie-meta'>
+                  <p><strong>Release Date:</strong> {movie.release_date}</p>
+                  <p><strong>Rating:</strong> {movie.vote_average}/10</p>
+                  <p><strong>Runtime:</strong> {movie.runtime} minutes</p>
                 </div>
-              )}
-              <Card.Subtitle className="detailssubtitle">    
-                {movie.vote_average?.toFixed(1)}
-                <MdOutlineStarOutline style={{background:'transparent'}}/>
-              </Card.Subtitle>
-            </Card.Title>
-            <Card.Text className="detailsoverview">
-              <strong>Overview</strong> 
-              <br />
-              {movie.overview}
-            </Card.Text>
+                {trailer && (
+                  <a href={trailer} target="_blank" rel="noopener noreferrer" className='trailer-button'>
+                    <FaRegPlayCircle /> Watch Trailer
+                  </a>
+                )}
+              </div>
+            </div>
+
             <ListGroup className="list-group-flush">
               <div className='castlist'>
                 {credits && credits.cast.slice(0, 5).map((actor) => (
@@ -140,8 +97,8 @@ const Details = () => {
             {/* Display Reviews */}
             <div className='reviews-section'>
               <h1>Reviews:</h1>
-              {apiReviews.length > 0 && (
-                <ListGroup >
+              {apiReviews.length > 0 ? (
+                <ListGroup>
                   {apiReviews.map(review => (
                     <ListGroupItem key={review.id} style={{background:'transparent'}}>
                       <strong>{review.author}</strong>
@@ -150,33 +107,9 @@ const Details = () => {
                     </ListGroupItem>
                   ))}
                 </ListGroup>
-              )}
-                {/* Add Review Form */}
-            
-              {userReviews.length > 0 && (
-                <ListGroup>
-                  {userReviews.map(review => (
-                    <ListGroupItem key={review.id}>
-                      <strong>{review.author}</strong>
-                      <p>{review.content}</p>
-                      {user && user.id === review.userId && (
-                        <div>
-                          <Button variant="danger" onClick={() => handleDelete(review.id)}>
-                            Delete
-                          </Button>
-                        </div>
-                      )}
-                      <hr />
-                    </ListGroupItem>
-                  ))}
-                </ListGroup>
-              )}
-              {apiReviews.length === 0 && userReviews.length === 0 && (
+              ) : (
                 <p>No reviews available for this movie.</p>
               )}
-               {user && (
-              <AddReview movieId={movieId} fetchReviews={fetchUserReviews} />
-            )}
             </div>
           </Card.Body>
         </Card>

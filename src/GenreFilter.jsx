@@ -1,23 +1,20 @@
 import React from 'react';
-import { Button, ButtonGroup } from 'react-bootstrap';
 
 const GenreFilter = ({ genres, selectedGenres, onGenreChange }) => {
   return (
-    
     <div className='genre-filter'>
-      <hr />
-      <ButtonGroup style={{background:'transparent'}}>
+      <select
+        className='genre-dropdown'
+        value={selectedGenres[0] || ''}
+        onChange={e => onGenreChange(Number(e.target.value))}
+      >
+        <option value=''>All Genres</option>
         {genres.map(genre => (
-          <Button
-            key={genre.id}
-            variant={selectedGenres.includes(genre.id) ? 'primary' : 'secondary'}
-            onClick={() => onGenreChange(genre.id)}
-          >
+          <option key={genre.id} value={genre.id}>
             {genre.name}
-          </Button>
+          </option>
         ))}
-      </ButtonGroup>
-      <hr />
+      </select>
     </div>
   );
 };

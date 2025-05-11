@@ -1,61 +1,41 @@
-import React, { useContext } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { NavLink } from 'react-router-dom';
 import banner from './Banner.jpg';
-import { AuthContext } from './AuthContext';
-import { Container } from 'react-bootstrap';
+import { FiSearch } from 'react-icons/fi';
 
-const Navbar = ({ onSearchChange, onLogout }) => {
-  const { user } = useContext(AuthContext);
-  const navigate = useNavigate();
-
+const Navbar = ({ onSearchChange }) => {
   const handleInputChange = (e) => {
     onSearchChange(e.target.value);
   };
 
-  const handleSignout = () => {
-    onLogout();
-    navigate('/');
-  };
-
   return (
-    
     <nav className='navcontainer'>
-     
-      <div style={{display:"flex",width:'100vw',color:"white"}} className='navblock'> 
-      <aside className='bannerblock'>
-        <img src={banner} alt="" />
-      </aside>
-      <ul >
-          <NavLink to='/Home'>
+      <div className='navblock'>
+        <NavLink to='/'>
+          <img src={banner} alt="logo" />
+        </NavLink>
+        <ul>
+          <NavLink to='/' className={({ isActive }) => isActive ? 'active' : ''}>
             <li>Home</li>
           </NavLink>
-        </ul>
-        <ul>
-          <NavLink to='/Contact'>
+          {/* <NavLink to='/Contact' className={({ isActive }) => isActive ? 'active' : ''}>
             <li>Contact us</li>
-          </NavLink>
-        </ul>
-        <ul>
-          <NavLink to='/About'>
+          </NavLink> */}
+          <NavLink to='/About' className={({ isActive }) => isActive ? 'active' : ''}>
             <li>About</li>
           </NavLink>
         </ul>
         <ul>
-          <input
-            type="search"
-            className="searchbox"
-            id="search"
-            placeholder='search'
-            onChange={handleInputChange}
-          />
-        </ul>
-        {user ? (
-          <ul>
-            <li className='welcome-message'>Hi, {user.username}</li>
-          </ul>
-        ) : null}
-        <ul>
-          <li onClick={handleSignout} className='signout'>Signout</li>
+          <div className='navbar-search-wrapper'>
+            <input
+              type="search"
+              className="searchbox"
+              id="search"
+              placeholder='search movies...'
+              onChange={handleInputChange}
+            />
+            <FiSearch className='search-icon' />
+          </div>
         </ul>
       </div>
     </nav>
