@@ -54,16 +54,18 @@ const Home = () => {
   useEffect(() => {
     const fetchGenres = async () => {
       try {
-        const response = await axios.get(
-          `https://api.themoviedb.org/3/genre/movie/list?api_key=${apiKey}`
-        );
+        const response = await axios.get('/api/movies', {
+          params: {
+            path: '/genre/movie/list'
+          }
+        });
         setGenres(response.data.genres);
       } catch (error) {
         console.error('Error fetching genres', error);
       }
     };
     fetchGenres();
-  }, [apiKey]);
+  }, []);
 
   useEffect(() => {
     fetchMovies(currentPage, selectedGenres);
@@ -100,9 +102,15 @@ const Home = () => {
     } else {
       try {
         const genreIds = genres.join(',');
-        const response = await axios.get(
-          `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&page=${page}&with_genres=${genreIds}`
-        );
+        const response = await axios.get('/api/movies', {
+          params: {
+            path: '/discover/movie',
+            query: {
+              page: page,
+              with_genres: genreIds
+            }
+          }
+        });
         setMovies(response.data.results);
         setTotalPages(response.data.total_pages);
       } catch (error) {
