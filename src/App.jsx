@@ -1,71 +1,42 @@
-import React, { useState } from 'react';
-import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
-import Welcome from './Welcome';
+import React from 'react';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Layout from './Layout';
-import Login from './Login';
-import Signup from './Signup';
 import Home from './Home';
 import About from './About';
 import Contact from './Contact';
 import Details from './Details';
-import ResetPassword from './ResetPassword'; 
-import { AuthProvider } from './AuthContext';
 
 const App = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-
-  const handleSearchChange = (query) => {
-    setSearchQuery(query);
-  };
-
   const router = createBrowserRouter([
     {
       path: '/',
-      element: <Layout onSearchChange={handleSearchChange} />,
+      element: <Layout />,
       children: [
         {
           index: true,
-          element: <Welcome />
+          element: <Home />,
         },
         {
-          path: 'Login',
-          element: <Login />
+          path: 'about',
+          element: <About />,
         },
         {
-          path: 'Signup',
-          element: <Signup />
+          path: 'contact',
+          element: <Contact />,
         },
         {
-          path: 'Home',
-          element: <Home />
+          path: 'details',
+          element: <Details />,
         },
         {
-          path: 'About',
-          element: <About />
+          path: 'details/:movieId',
+          element: <Details />,
         },
-        {
-          path: 'Contact',
-          element: <Contact />
-        },
-        {
-          path: 'Details',
-          element: <Details />
-        },
-        {
-          path: 'reset-password',
-          element: <ResetPassword />
-        }
-      ]
-    }
+      ],
+    },
   ]);
 
-  return (
-    <AuthProvider>
-      <RouterProvider router={router}>
-        <Outlet context={{ searchQuery }} />
-      </RouterProvider>
-    </AuthProvider>
-  );
+  return <RouterProvider router={router} />;
 };
 
 export default App;

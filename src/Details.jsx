@@ -1,188 +1,153 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import axios from 'axios';
-import { Card, ListGroup, ListGroupItem, Button } from 'react-bootstrap';
-import { MdOutlineStarOutline } from "react-icons/md";
-import { FaRegPlayCircle } from "react-icons/fa";
-import { AuthContext } from './AuthContext';
-import AddReview from './AddReview';
+import { Card, Button } from 'react-bootstrap';
+
+const tmdbBaseUrl = 'https://api.themoviedb.org/3';
+const tmdbImageBase = 'https://image.tmdb.org/t/p/w780';
+const fallbackPoster = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="600"><rect width="100%" height="100%" fill="%230f172a"/><text x="50%" y="48%" dominant-baseline="middle" text-anchor="middle" fill="%23e2e8f0" font-size="28" font-family="Arial">No Poster</text><text x="50%" y="56%" dominant-baseline="middle" text-anchor="middle" fill="%2394a3b8" font-size="16" font-family="Arial">Image unavailable</text></svg>';
+const tmdbHeaders = () => ({
+  Authorization: `Bearer ${process.env.REACT_APP_TMDB_ACCESS_TOKEN}`,
+  Accept: 'application/json',
+});
+
+const pickTrailer = (videos = []) => {
+  const youtubeVideos = videos.filter((video) => video.site === 'YouTube');
+  const trailerPriority = ['Trailer', 'Teaser', 'Clip'];
+
+  for (const type of trailerPriority) {
+    const official = youtubeVideos.find((video) => video.type === type && video.official);
+    if (official) return official;
+    const any = youtubeVideos.find((video) => video.type === type);
+    if (any) return any;
+  }
+
+  return youtubeVideos[0] || null;
+};
 
 const Details = () => {
   const location = useLocation();
-  const { apiKey, movieId } = location.state || {};
+  const { movieId: movieIdFromParams } = useParams();
+  const { movieId: movieIdFromState, mediaType: mediaTypeFromState } = location.state || {};
+  const movieId = movieIdFromState || movieIdFromParams;
+  const mediaType = mediaTypeFromState || 'movie';
   const [movie, setMovie] = useState(null);
-  const [apiReviews, setApiReviews] = useState([]);
-  const [userReviews, setUserReviews] = useState([]);
-  const [credits, setCredits] = useState(null);
-  const [trailer, setTrailer] = useState(null);
-  const { user } = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [trailerUrl, setTrailerUrl] = useState('');
+  const [cast, setCast] = useState([]);
 
   useEffect(() => {
     const fetchMovie = async () => {
-      if (apiKey && movieId) {
-        try {
-          // Fetch movie details
-          const response = await axios.get(
-            `https://api.themoviedb.org/3/movie/${movieId}?api_key=${apiKey}`
-          );
-          const movieData = response.data;
-          setMovie(movieData);
+      if (!movieId) {
+        setError('Open movie details from the Home page.');
+        return;
+      }
 
-          // Fetch reviews for the movie from API
-          const reviewsResponse = await axios.get(
-            `https://api.themoviedb.org/3/movie/${movieData.id}/reviews?api_key=${apiKey}`
-          );
-          setApiReviews(reviewsResponse.data.results);
-
-          // Fetch user reviews for the movie from JSON Server
-          fetchUserReviews();
-
-          // Fetch credits for the movie
-          const creditsResponse = await axios.get(
-            `https://api.themoviedb.org/3/movie/${movieData.id}/credits?api_key=${apiKey}`
-          );
-          setCredits(creditsResponse.data);
-
-          // Fetch trailers for the movie
-          const videosResponse = await axios.get(
-            `https://api.themoviedb.org/3/movie/${movieData.id}/videos?api_key=${apiKey}`
-          );
-          const trailers = videosResponse.data.results.filter(video => video.type === 'Trailer' && video.site === 'YouTube');
-          if (trailers.length > 0) {
-            setTrailer(`https://www.youtube.com/watch?v=${trailers[0].key}`);
-          }
-        } catch (error) {
-          console.error('Error fetching the movie', error);
-        }
+      setIsLoading(true);
+      setError('');
+      try {
+        const detailsResponse = await axios.get(`${tmdbBaseUrl}/${mediaType}/${movieId}`, { headers: tmdbHeaders() });
+        const videosResponse = await axios.get(`${tmdbBaseUrl}/${mediaType}/${movieId}/videos`, { headers: tmdbHeaders() });
+        const creditsResponse = await axios.get(`${tmdbBaseUrl}/${mediaType}/${movieId}/credits`, { headers: tmdbHeaders() });
+        const trailer = pickTrailer(videosResponse.data?.results || []);
+        setTrailerUrl(trailer ? `https://www.youtube.com/watch?v=${trailer.key}` : '');
+        setCast((creditsResponse.data?.cast || []).slice(0, 8));
+        setMovie(detailsResponse.data || null);
+      } catch (fetchError) {
+        console.error('Error fetching the movie from TMDb', fetchError);
+        setMovie(null);
+        setError('Unable to load movie details. Please try again.');
+      } finally {
+        setIsLoading(false);
       }
     };
-
     fetchMovie();
-  }, [apiKey, movieId]);
+  }, [movieId, mediaType]);
 
-  const fetchUserReviews = async () => {
-    try {
-      const userReviewsResponse = await axios.get(
-        `http://localhost:5000/reviews?movieId=${movieId}`
-      );
-      setUserReviews(userReviewsResponse.data);
-    } catch (error) {
-      console.error('Error fetching user reviews', error);
-    }
-  };
+  if (isLoading) {
+    return (
+      <div className="page-shell">
+        <div className="status-message">Loading movie details...</div>
+      </div>
+    );
+  }
 
-  const handleDelete = async (reviewId) => {
-    try {
-      await axios.delete(`http://localhost:5000/reviews/${reviewId}`);
-      fetchUserReviews();
-    } catch (error) {
-      console.error('Error deleting review', error);
-    }
-  };
+  if (error || !movie) {
+    return (
+      <div className="page-shell">
+        <div className="details-empty content-card">
+          <h2>Details unavailable</h2>
+          <p>{error || 'Movie details could not be loaded.'}</p>
+          <Link to="/" className="back-link">
+            Back to Home
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
-  const getDirector = () => {
-    if (credits) {
-      const director = credits.crew.find(member => member.job === 'Director');
-      return director ? director.name : 'N/A';
-    }
-    return 'N/A';
-  };
+  const fallbackTrailerSearchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(
+    `${movie.title || movie.name || ''} official trailer`
+  )}`;
+  const resolvedTrailerUrl = trailerUrl || fallbackTrailerSearchUrl;
 
   return (
-    <div>
-      {movie ? (
-        <Card className="details-card">
+    <div className="page-shell">
+      <Card className="details-card">
+        <div className="details-media">
           <Card.Img
             className="details-image"
-            src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-            alt="img"
+            src={movie.poster_path ? `${tmdbImageBase}${movie.poster_path}` : fallbackPoster}
+            alt={`${movie.title || movie.name} poster`}
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = fallbackPoster;
+            }}
           />
-          <Card.Body>
-            <Card.Title style={{background:'transparent'}}>
-              <h5 className='detailsTitle'>{movie.original_title} ({movie.release_date.slice(0, 4)})</h5>
-              <ListGroupItem className='date'>({movie.release_date})</ListGroupItem>
-              <ListGroupItem className='language'>Language: {movie.original_language}</ListGroupItem>
-              <ListGroupItem className='director'>Director: {getDirector()}</ListGroupItem>
-              {trailer && (
-                <div className='trailer'>
-                  <Button 
-                    variant="primary" 
-                    onClick={() => window.open(trailer, '_blank')}
-                  >
-                    <FaRegPlayCircle style={{ marginRight: '5px',background:'transparent', margin:'2px'}} />Play Trailer
-                  </Button>
-                </div>
-              )}
-              <Card.Subtitle className="detailssubtitle">    
-                {movie.vote_average?.toFixed(1)}
-                <MdOutlineStarOutline style={{background:'transparent'}}/>
-              </Card.Subtitle>
-            </Card.Title>
-            <Card.Text className="detailsoverview">
-              <strong>Overview</strong> 
-              <br />
-              {movie.overview}
-            </Card.Text>
-            <ListGroup className="list-group-flush">
-              <div className='castlist'>
-                {credits && credits.cast.slice(0, 5).map((actor) => (
-                  <div key={actor.cast_id} className='cast-card'>
-                    <img
-                      src={`https://image.tmdb.org/t/p/w200${actor.profile_path}`}
-                      alt={actor.name}
-                    />
-                    <p>{actor.name} as {actor.character}</p>
-                  </div>
-                ))}
-              </div>
-            </ListGroup>
-          
-            {/* Display Reviews */}
-            <div className='reviews-section'>
-              <h1>Reviews:</h1>
-              {apiReviews.length > 0 && (
-                <ListGroup >
-                  {apiReviews.map(review => (
-                    <ListGroupItem key={review.id} style={{background:'transparent'}}>
-                      <strong>{review.author}</strong>
-                      <p>{review.content}</p>
-                      <hr />
-                    </ListGroupItem>
-                  ))}
-                </ListGroup>
-              )}
-                {/* Add Review Form */}
-            
-              {userReviews.length > 0 && (
-                <ListGroup>
-                  {userReviews.map(review => (
-                    <ListGroupItem key={review.id}>
-                      <strong>{review.author}</strong>
-                      <p>{review.content}</p>
-                      {user && user.id === review.userId && (
-                        <div>
-                          <Button variant="danger" onClick={() => handleDelete(review.id)}>
-                            Delete
-                          </Button>
-                        </div>
-                      )}
-                      <hr />
-                    </ListGroupItem>
-                  ))}
-                </ListGroup>
-              )}
-              {apiReviews.length === 0 && userReviews.length === 0 && (
-                <p>No reviews available for this movie.</p>
-              )}
-               {user && (
-              <AddReview movieId={movieId} fetchReviews={fetchUserReviews} />
-            )}
+        </div>
+        <Card.Body className="details-content">
+          <h2 className="detailsTitle">
+            {movie.title || movie.name} <span>({(movie.release_date || movie.first_air_date || '').slice(0, 4)})</span>
+          </h2>
+
+          <div className="details-meta">
+            <div><strong>Released:</strong> {movie.release_date || movie.first_air_date || 'N/A'}</div>
+            <div><strong>Language:</strong> {(movie.spoken_languages || []).map((lang) => lang.english_name).join(', ') || 'N/A'}</div>
+            <div><strong>Genre:</strong> {(movie.genres || []).map((genre) => genre.name).join(', ') || 'N/A'}</div>
+            <div><strong>Runtime:</strong> {movie.runtime ? `${movie.runtime} min` : 'N/A'}</div>
+            <div><strong>TMDb Rating:</strong> {movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}</div>
+          </div>
+
+          <Card.Text className="detailsoverview">
+            <strong>Plot</strong>
+            <br />
+            {movie.overview || 'Overview not available.'}
+          </Card.Text>
+
+          <div className="castlist">
+            <strong>Cast:</strong>{' '}
+            {cast.length > 0
+              ? cast.map((actor) => actor.name).join(', ')
+              : 'Cast details are unavailable.'}
+          </div>
+
+          <div className="details-actions">
+            <Button
+              className="website-button"
+              variant="primary"
+              onClick={() => window.open(resolvedTrailerUrl, '_blank')}
+            >
+              {trailerUrl ? 'Watch Trailer' : 'Search Trailer'}
+            </Button>
+            <div>
+              <Link to="/" className="back-link">
+                Back to Home
+              </Link>
             </div>
-          </Card.Body>
-        </Card>
-      ) : (
-        <div>Loading...</div>
-      )}
+          </div>
+        </Card.Body>
+      </Card>
     </div>
   );
 };

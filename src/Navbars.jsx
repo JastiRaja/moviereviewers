@@ -1,62 +1,41 @@
-import React, { useContext } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { NavLink } from 'react-router-dom';
 import banner from './Banner.jpg';
-import { AuthContext } from './AuthContext';
-import { Container } from 'react-bootstrap';
 
 const Navbar = ({ onSearchChange, onLogout }) => {
-  const { user } = useContext(AuthContext);
-  const navigate = useNavigate();
-
   const handleInputChange = (e) => {
     onSearchChange(e.target.value);
   };
 
-  const handleSignout = () => {
-    onLogout();
-    navigate('/');
-  };
-
   return (
-    
-    <nav className='navcontainer'>
-     
-      <div style={{display:"flex",width:'100vw',color:"white"}} className='navblock'> 
-      <aside className='bannerblock'>
-        <img src={banner} alt="" />
-      </aside>
-      <ul >
-          <NavLink to='/Home'>
-            <li>Home</li>
-          </NavLink>
+    <nav className="navcontainer">
+      <div className="navblock">
+        <aside className="bannerblock">
+          <img src={banner} alt="MovieReviewer logo" />
+          <h1 className="brand-title">MovieReviewer</h1>
+        </aside>
+        <ul className="nav-links">
+          <li>
+            <NavLink to="/" end>
+              Home
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/contact">Contact</NavLink>
+          </li>
+          <li>
+            <NavLink to="/about">About</NavLink>
+          </li>
         </ul>
-        <ul>
-          <NavLink to='/Contact'>
-            <li>Contact us</li>
-          </NavLink>
-        </ul>
-        <ul>
-          <NavLink to='/About'>
-            <li>About</li>
-          </NavLink>
-        </ul>
-        <ul>
+        <div className="search-wrap">
           <input
             type="search"
             className="searchbox"
             id="search"
-            placeholder='search'
+            placeholder="Search movies..."
             onChange={handleInputChange}
           />
-        </ul>
-        {user ? (
-          <ul>
-            <li className='welcome-message'>Hi, {user.username}</li>
-          </ul>
-        ) : null}
-        <ul>
-          <li onClick={handleSignout} className='signout'>Signout</li>
-        </ul>
+        </div>
       </div>
     </nav>
   );
